@@ -22,7 +22,16 @@ jobs:
             CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
             go build -ldflags="-s -w" -o myapp
 
-        - run: ls -la
+        - name: upload binary to remote
+          run: |
+            cat myapp | \
+            ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} \
+              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+              "cat > /tmp/guide-backend.new && \
+              sudo mv /tmp/guide-backend.new /opt/guide-backend/guide-backend && \
+              sudo chmod +x /opt/guide-backend/guide-backend && \
+              sudo systemctl daemon-reload && \
+              sudo systemctl start guide-backend"
 
         - name: Deploy via SSH
           uses: appleboy/ssh-action@v1.0.0
@@ -36,14 +45,9 @@ jobs:
             script: |
               set -e
               sudo systemctl stop guide-backend || true
-
-              scp -o StrictHostKeyChecking=no -P ${{ secrets.VPS_PORT }} \
-              /github/workspace/myapp ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/guide-backend/guide-backend.new
-
-              ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} \
-              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-              "mv /opt/guide-backend/guide-backend.new /opt/guide-backend/guide-backend && chmod +x /opt/guide-backend/guide-backend"
-
+              cat > /tmp/guide-backend.new && \
+              sudo mv /tmp/guide-backend.new /opt/guide-backend/guide-backend && \
+              sudo chmod +x /opt/guide-backend/guide-backend
               sudo systemctl daemon-reload
               sudo systemctl start guide-backend
 
