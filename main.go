@@ -5,6 +5,7 @@ import (
 
 	"github.com/THE-G0OSE/guide-backend/database"
 	"github.com/THE-G0OSE/guide-backend/handlers"
+	"github.com/THE-G0OSE/guide-backend/models"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -13,7 +14,7 @@ import (
 func main() {
 
 	database.Connect()
-	database.DB.Debug().AutoMigrate()
+	database.DB.Debug().AutoMigrate(&models.User{})
 
 	e := echo.New()
 	e.Use(middleware.Logger())
