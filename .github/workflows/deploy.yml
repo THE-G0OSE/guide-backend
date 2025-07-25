@@ -35,10 +35,13 @@ jobs:
               set -e
               sudo systemctl stop guide-backend || true
 
-              rsync -avz --progress "$GIHUB_WORKSPACE/myapp" ${{ secrets.VPS_USER}}@${{ secrets.VPS_HOST }}:${{ secrets.APP_DIR }}/myapp.new
-              
-              ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}:${{ secrets.VPS_HOST }} "mv ${{secrets.APP_DIR }}/myapp.new ${{ secrets.APP_DIR }}/guide-backend && chmod +x ${{ secrets.APP_DIR }}/guide-backend"
-              
+              scp -o StrictHostKeyChecking=no -P ${{ secrets.VPS_PORT }} \
+              myapp ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/guide-backend/guide-backend.new
+
+              ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} \
+              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+              "mv /opt/guide-backend/guide-backend.new /opt/guide-backend/guide-backend && chmod +x /opt/guide-backend/guide-backend"
+
               sudo systemctl daemon-reload
               sudo systemctl start guide-backend
 
