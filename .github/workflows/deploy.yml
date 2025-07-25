@@ -43,7 +43,7 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             script: |
               sudo systemctl stop guide-backend || true
-              sudo mv /opt/guide-backend/nyapp.new /opt/guide-backend/bin && \
+              sudo mv /opt/guide-backend/myapp.new /opt/guide-backend/bin && \
               sudo chmod +x /opt/guide-backend/guide-backend
               sudo systemctl daemon-reload
               sudo systemctl start guide-backend
