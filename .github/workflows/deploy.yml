@@ -36,7 +36,7 @@ jobs:
               sudo systemctl stop guide-backend || true
 
               scp -o StrictHostKeyChecking=no -P ${{ secrets.VPS_PORT }} \
-              "$GITHUB_WORKSPACE/myapp" ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/guide-backend/guide-backend.new
+              github/workspace/myapp ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/guide-backend/guide-backend.new
 
               ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} \
               ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
