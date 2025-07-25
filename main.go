@@ -11,4 +11,6 @@ func main() {
 
 	e.GET("/ping", handlers.Ping)
 
+	e.Logger.Fatal(e.Start(":3000"))
+
 }
