@@ -24,18 +24,20 @@ jobs:
 
         - name: Deploy via SSH
           uses: appleboy/ssh-action@v1.0.0
+          env: 
+            HOST_KEY_CHECKING: false
           with: 
             host: ${{ secrets.VPS_HOST }}
+            port: ${{ secrets.VPS_PORT }}
             username: ${{ secrets.VPS_USER }}
             key: ${{ secrets.SSH_KEY }}
-            port: ${{ secrets.VPS_PORT }}
             script: |
               set -e
-              sudo systemctl stop guide-bakend || true
+              sudo systemctl stop guide-backend || true
 
               rsync -avz --progress "$GIHUB_WORKSPACE/myapp" ${{ secrets.VPS_USER}}@${{ secrets.VPS_HOST }}:${{ secrets.APP_DIR }}/myapp.new
               
-              ssh ${{ secrets.VPS_USER }}:${{ secrets.VPS_HOST }} "mv ${{secrets.APP_DIR }}/myapp.new ${{ secrets.APP_DIR }}/guide-backend && chmod +x ${{ secrets.APP_DIR }}/guide-backend"
+              ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}:${{ secrets.VPS_HOST }} "mv ${{secrets.APP_DIR }}/myapp.new ${{ secrets.APP_DIR }}/guide-backend && chmod +x ${{ secrets.APP_DIR }}/guide-backend"
               
               sudo systemctl daemon-reload
               sudo systemctl start guide-backend
