@@ -6,6 +6,7 @@ import (
 	"github.com/THE-G0OSE/guide-backend/database"
 	"github.com/THE-G0OSE/guide-backend/handlers"
 	"github.com/THE-G0OSE/guide-backend/models"
+	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -31,6 +32,9 @@ func main() {
 	r := e.Group("/api")
 	config := echojwt.Config{
 		SigningKey: []byte(os.Getenv("JWT_SECRET")),
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(models.JwtCustomClaims)
+		},
 	}
 
 	r.Use(echojwt.WithConfig(config))

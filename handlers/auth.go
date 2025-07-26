@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -65,7 +64,6 @@ func Me(c echo.Context) error {
 	}
 	claims, ok := user.Claims.(*models.JwtCustomClaims)
 	if !ok {
-		log.Println("claims: ", user.Claims)
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid claims")
 	}
 	return c.JSON(http.StatusOK, echo.Map{
