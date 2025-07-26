@@ -58,8 +58,14 @@ func Login(c echo.Context) error {
 }
 
 func Me(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*models.JwtCustomClaims)
+	user, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "no token")
+	}
+	claims, ok := user.Claims.(*models.JwtCustomClaims)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid claims")
+	}
 	return c.JSON(http.StatusOK, echo.Map{
 		"uid":      claims.UserID,
 		"username": claims.Username,
