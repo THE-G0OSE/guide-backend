@@ -61,11 +61,11 @@ func Login(c echo.Context) error {
 func Me(c echo.Context) error {
 	user, ok := c.Get("user").(*jwt.Token)
 	if !ok {
-		log.Println("claims: ", user.Claims)
 		return echo.NewHTTPError(http.StatusUnauthorized, "no token")
 	}
 	claims, ok := user.Claims.(*models.JwtCustomClaims)
 	if !ok {
+		log.Println("claims: ", user.Claims)
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid claims")
 	}
 	return c.JSON(http.StatusOK, echo.Map{
