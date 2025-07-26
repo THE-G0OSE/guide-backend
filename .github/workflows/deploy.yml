@@ -34,8 +34,6 @@ jobs:
 
         - name: restart service
           uses: appleboy/ssh-action@v1.0.0
-          env: 
-            HOST_KEY_CHECKING: false
           with: 
             host: ${{ secrets.VPS_HOST }}
             port: ${{ secrets.VPS_PORT }}

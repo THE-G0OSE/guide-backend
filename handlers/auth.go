@@ -59,6 +59,9 @@ func Login(c echo.Context) error {
 
 func Me(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	return c.JSON(http.StatusOK, claims)
+	claims := user.Claims.(*models.JwtCustomClaims)
+	return c.JSON(http.StatusOK, echo.Map{
+		"uid":      claims.UserID,
+		"username": claims.Username,
+	})
 }
