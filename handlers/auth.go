@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -60,6 +61,7 @@ func Login(c echo.Context) error {
 func Me(c echo.Context) error {
 	user, ok := c.Get("user").(*jwt.Token)
 	if !ok {
+		log.Println("claims: ", user.Claims)
 		return echo.NewHTTPError(http.StatusUnauthorized, "no token")
 	}
 	claims, ok := user.Claims.(*models.JwtCustomClaims)
