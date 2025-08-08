@@ -3,7 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/THE-G0OSE/guide-backend/database"
 	"github.com/THE-G0OSE/guide-backend/models"
@@ -82,7 +81,7 @@ func GetMyCourses(c echo.Context) error {
 
 	var courses []models.Course
 
-	if err := database.DB.Where("CreatorID = ?", claims.ID).Find(&courses).Error; err != nil {
+	if err := database.DB.Where("Creator_ID = ?", claims.UserID).Find(&courses).Error; err != nil {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
@@ -120,14 +119,7 @@ func DeleteCourse(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "course not found")
 	}
 
-	IDint, err := strconv.ParseUint(claims.ID, 10, 0)
-
-	if err != nil {
-		log.Print(err)
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid user id")
-	}
-
-	if course.ID != uint(IDint) {
+	if course.ID != claims.UserID {
 		return echo.NewHTTPError(http.StatusUnauthorized, "you have not permission to this action")
 	}
 

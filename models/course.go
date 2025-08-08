@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type Course struct {
 	gorm.Model
-	Name      string `json:"name"`
-	CreatorID uint   `json:"creator"`
-	Levels    []uint `json:"levels"`
+	Name      string  `json:"name" gorm:"notnull"`
+	CreatorID uint    `json:"creator"`
+	Levels    []Level `json:"levels"`
 }
 
 type GetCourseRequest struct {
@@ -25,7 +25,7 @@ func RequestToCourse(in CourseCreateRequest, creator uint) Course {
 	course := Course{
 		Name:      in.Name,
 		CreatorID: creator,
-		Levels:    []uint{},
+		Levels:    nil,
 	}
 	return course
 }

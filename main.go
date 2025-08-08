@@ -15,7 +15,7 @@ import (
 func main() {
 
 	database.Connect()
-	database.DB.Debug().AutoMigrate(&models.User{})
+	database.DB.Debug().AutoMigrate(&models.User{}, &models.Course{}, &models.Level{}, &models.Block{})
 
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
