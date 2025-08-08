@@ -64,6 +64,33 @@ func GetCourse(c echo.Context) error {
 
 }
 
+func GetMyCourses(c echo.Context) error {
+
+	user, ok := c.Get("user").(*jwt.Token)
+
+	if !ok {
+		log.Print("failed to get jwt")
+		return echo.NewHTTPError(http.StatusUnauthorized)
+	}
+
+	claims, ok := user.Claims.(*models.JwtCustomClaims)
+
+	if !ok {
+		log.Print("failed to parse claims")
+		return echo.NewHTTPError(http.StatusUnauthorized)
+	}
+
+	var courses []models.Course
+
+	if err := database.DB.Where("CreatorID = ?", claims.ID).Find(&courses).Error; err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"courses": courses})
+
+}
+
 func DeleteCourse(c echo.Context) error {
 
 	user, ok := c.Get("user").(*jwt.Token)

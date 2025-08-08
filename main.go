@@ -44,6 +44,7 @@ func main() {
 
 	course.POST("/create", handlers.CreateCourse)
 	course.GET("/getone", handlers.GetCourse)
+	course.GET("/getmy", handlers.GetMyCourses)
 	course.DELETE("/delete", handlers.DeleteCourse)
 
 	e.Logger.Fatal(e.Start(":3000"))
