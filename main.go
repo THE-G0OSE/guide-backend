@@ -40,6 +40,12 @@ func main() {
 	r.Use(echojwt.WithConfig(config))
 	r.GET("/me", handlers.Me)
 
+	course := r.Group("/courses")
+
+	course.POST("/create", handlers.CreateCourse)
+	course.GET("/getone", handlers.GetCourse)
+	course.DELETE("/delete", handlers.DeleteCourse)
+
 	e.Logger.Fatal(e.Start(":3000"))
 
 }
