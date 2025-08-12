@@ -40,10 +40,10 @@ jobs:
             username: ${{ secrets.VPS_USER }}
             key: ${{ secrets.SSH_KEY }}
             script: |
-              sudo systemctl stop guide-backend || true
+              sudo systemctl stop backend || true
               sudo mv /opt/guide-backend/myapp /opt/guide-backend/bin && \
               sudo chmod +x /opt/guide-backend/guide-backend
               sudo systemctl daemon-reload
-              sudo systemctl start guide-backend
+              sudo systemctl start backend
 
             
