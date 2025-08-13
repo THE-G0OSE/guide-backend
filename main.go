@@ -43,9 +43,9 @@ func main() {
 	course := r.Group("/courses")
 
 	course.POST("/create", handlers.CreateCourse)
-	course.GET("/getone", handlers.GetCourse)
+	course.GET("/getone/:id", handlers.GetCourse)
 	course.GET("/getmy", handlers.GetMyCourses)
-	course.DELETE("/delete", handlers.DeleteCourse)
+	course.DELETE("/delete/:id", handlers.DeleteCourse)
 
 	e.Logger.Fatal(e.Start(":3000"))
 

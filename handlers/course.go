@@ -45,16 +45,11 @@ func CreateCourse(c echo.Context) error {
 
 func GetCourse(c echo.Context) error {
 
-	var in models.GetCourseRequest
-
-	if err := c.Bind(&in); err != nil {
-		log.Print(err)
-		return echo.NewHTTPError(http.StatusBadRequest)
-	}
+	id := c.Param("id")
 
 	var course models.Course
 
-	if err := database.DB.Where("ID = ?", in.ID).First(&course).Error; err != nil {
+	if err := database.DB.Where("ID = ?", id).First(&course).Error; err != nil {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "course not found")
 	}
@@ -105,16 +100,11 @@ func DeleteCourse(c echo.Context) error {
 		log.Print("failed to parse claims")
 	}
 
-	var in models.DeleteCourseRequest
-
-	if err := c.Bind(&in); err != nil {
-		log.Print(err)
-		return echo.NewHTTPError(http.StatusBadRequest)
-	}
+	id := c.Param("id")
 
 	var course models.Course
 
-	if err := database.DB.Where("ID = ?", in.ID).First(&course).Error; err != nil {
+	if err := database.DB.Where("ID = ?", id).First(&course).Error; err != nil {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusNotFound, "course not found")
 	}
