@@ -109,7 +109,7 @@ func DeleteCourse(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "course not found")
 	}
 
-	if course.ID != claims.UserID {
+	if course.CreatorID != claims.UserID {
 		return echo.NewHTTPError(http.StatusUnauthorized, "you have not permission to this action")
 	}
 
