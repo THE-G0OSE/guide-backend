@@ -6,6 +6,7 @@ import (
 	"github.com/THE-G0OSE/guide-backend/database"
 	"github.com/THE-G0OSE/guide-backend/handlers"
 	"github.com/THE-G0OSE/guide-backend/models"
+	"github.com/THE-G0OSE/guide-backend/repository"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -26,8 +27,11 @@ func main() {
 
 	e.GET("/ping", handlers.Ping)
 
-	e.POST("/register", handlers.Register)
-	e.POST("/login", handlers.Login)
+	userRepo := &repository.UserRepo{DB: database.DB}
+	authHandler := &handlers.AuthHandler{Repo: userRepo}
+
+	e.POST("/register", authHandler.Register)
+	e.POST("/login", authHandler.Login)
 
 	r := e.Group("/api")
 	config := echojwt.Config{
@@ -41,11 +45,14 @@ func main() {
 	r.GET("/me", handlers.Me)
 
 	course := r.Group("/courses")
+	courseRepo := &repository.CourseRepo{DB: database.DB}
+	courseHandler := &handlers.CourseHandler{Repo: courseRepo}
 
-	course.POST("/create", handlers.CreateCourse)
-	course.GET("/getone/:id", handlers.GetCourse)
-	course.GET("/getmy", handlers.GetMyCourses)
-	course.DELETE("/delete/:id", handlers.DeleteCourse)
+	course.POST("/create", courseHandler.CreateCourse)
+	course.GET("/getone/:id", courseHandler.GetCourse)
+	course.GET("/getmy", courseHandler.GetMyCourses)
+	course.DELETE("/delete/:id", courseHandler.DeleteCourse)
+	course.PATCH("/patch/:id", courseHandler.PatchCourse)
 
 	e.Logger.Fatal(e.Start(":3000"))
 

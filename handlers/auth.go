@@ -5,13 +5,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/THE-G0OSE/guide-backend/database"
 	"github.com/THE-G0OSE/guide-backend/models"
+	"github.com/THE-G0OSE/guide-backend/repository"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
-func Register(c echo.Context) error {
+type AuthHandler struct {
+	Repo *repository.UserRepo
+}
+
+func (h AuthHandler) Register(c echo.Context) error {
 	var in models.AuthRequest
 	if err := c.Bind(&in); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -19,22 +23,23 @@ func Register(c echo.Context) error {
 
 	user := models.RequestToUser(in)
 
-	if err := database.DB.Create(&user).Error; err != nil {
+	if err := h.Repo.Create(&user); err != nil {
 		return echo.NewHTTPError(http.StatusConflict, "user already exists")
 	}
 
 	return c.JSON(http.StatusCreated, echo.Map{"id": user.ID})
 }
 
-func Login(c echo.Context) error {
+func (h AuthHandler) Login(c echo.Context) error {
+
 	var in models.AuthRequest
+
 	if err := c.Bind(&in); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var user models.User
-
-	if err := database.DB.Where("username = ? AND password = ?", in.Username, in.Password).First(&user).Error; err != nil {
+	user, err := h.Repo.Login(in.Password, in.Username)
+	if err != nil {
 		return echo.ErrUnauthorized
 	}
 
