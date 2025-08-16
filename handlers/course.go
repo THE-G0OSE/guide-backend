@@ -176,9 +176,6 @@ func (h CourseHandler) PatchCourse(c echo.Context) error {
 	if patch.Name != nil {
 		course.Name = patch.Name
 	}
-	if patch.Levels != nil {
-		course.Levels = patch.Levels
-	}
 
 	if err := h.Repo.Patch(course); err != nil {
 		log.Print(err)

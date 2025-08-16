@@ -22,7 +22,10 @@ func RequestToCourse(in CourseCreateRequest, creator uint) Course {
 	return course
 }
 
+type LevelPatchItem struct {
+	ID uint `json:"id"`
+}
+
 type CoursePathcRequest struct {
-	Name   *string `json:"name,omitempty"`
-	Levels []Level `json:"levels,omitempty"`
+	Name *string `json:"name,omitempty"`
 }
